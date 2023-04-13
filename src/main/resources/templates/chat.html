@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>CHAT APPLICATION</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+<!--    <link rel="stylesheet" th:href="@{chat.css}" />-->
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">CHAT APPLICATION</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="starter-template">
+        <form th:action="@{/chat}" method="post">
+            <div class="input-group mb-3 mt-2">
+                <input type="text" class="form-control" name="prompt" th:value="${request}" required autofocus placeholder="Type here..." aria-label="ask from bot" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary" type="submit" value="Send" id="button-addon2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+                    </svg>
+                </button>
+            </div>
+<!--            <fieldset>-->
+<!--                <div class=" mt-2 form-group">-->
+<!--                    <input type="text" class="form-control" name="prompt" th:value="${request}" required autofocus/>-->
+<!--                </div>-->
+<!--                <div class="d-grid gap-2 mt-2">-->
+<!--                    <button class="btn btn-primary" type="submit" value="Send" >Button</button>-->
+<!--                </div>-->
+<!--            </fieldset>-->
+        </form>
+        <h2 th:if="${response != null}" >ChatGPT responded with: </h2>
+        <p th:if="${response != null}" th:text="${response}" />
+    </div>
+</div>
+</body>
+</html>

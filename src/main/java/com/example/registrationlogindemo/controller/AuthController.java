@@ -1,9 +1,15 @@
 package com.example.registrationlogindemo.controller;
 
+import com.example.registrationlogindemo.dto.CompletionRequest;
+import com.example.registrationlogindemo.dto.CompletionResponse;
+import com.example.registrationlogindemo.dto.FormInputDTO;
 import com.example.registrationlogindemo.dto.UserDto;
 import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.service.UserService;
+import com.example.registrationlogindemo.util.OpenAiApiClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +26,18 @@ public class AuthController {
 
     public AuthController(UserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired private ObjectMapper jsonMapper;
+    @Autowired
+    private OpenAiApiClient client;
+
+    private String chatWithGpt3(String message) throws Exception {
+        var completion = CompletionRequest.defaultWith(message);
+        var postBodyJson = jsonMapper.writeValueAsString(completion);
+        var responseBody = client.postToOpenAiApi(postBodyJson, OpenAiApiClient.OpenAiService.GPT_3);
+        var completionResponse = jsonMapper.readValue(responseBody, CompletionResponse.class);
+        return completionResponse.firstAnswer().orElseThrow();
     }
 
     @GetMapping("index")
@@ -62,5 +80,22 @@ public class AuthController {
         List<UserDto> users = userService.findAllUsers();
         model.addAttribute("users", users);
         return "users";
+    }
+
+    @GetMapping("/chat")
+    public String chat(Model model){
+        return "chat";
+    }
+
+    @PostMapping(path = "/chat")
+    public String chat(Model model, @ModelAttribute FormInputDTO dto) {
+        try {
+            model.addAttribute("request", dto.prompt());
+            model.addAttribute("response", chatWithGpt3(dto.prompt()));
+        } catch (Exception e) {
+            System.out.println(e);
+            model.addAttribute("response", "Error in communication with OpenAI ChatGPT API.");
+        }
+        return "chat";
     }
 }
