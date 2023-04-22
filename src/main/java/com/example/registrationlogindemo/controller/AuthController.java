@@ -98,4 +98,10 @@ public class AuthController {
         }
         return "chat";
     }
+
+    // a function to create simple unit test
+    @GetMapping("/welcome")
+    public String welcome(String name){
+        return String.format("Welcome %s!", name);
+    }
 }
